@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class GameManager {
-	public  final static int grid_length = 4 ;
-	public  final static int grid_width  = 4 ;
+	public static int grid_length = 4 ;
+	public static int grid_width  = 4 ;
 
 	static List<Grid> all_grids = new ArrayList<>();
 	static Grid current_grid = new Grid(); 
@@ -41,7 +41,10 @@ public class GameManager {
 	}
 	
 	static Scanner in = new Scanner(System.in);
+	
+	
 	public static void game_init() {
+		Cell.cells_init(); // to initalize the counter for random colors .
 		System.out.println("enter the color for each of these cells");
 		for (int i = 0; i < GameManager.grid_length; i++) {
 	        for (int j = 0; j < GameManager.grid_width; j++) {
