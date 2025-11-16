@@ -1,16 +1,28 @@
 package main;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class GameManager {
+	// ===========================================
+	// Constans + Statics . 
+	// ===========================================
+	static Scanner in = new Scanner(System.in);
 	public static int grid_length = 4 ;
 	public static int grid_width  = 4 ;
-
-	static List<Grid> all_grids = new ArrayList<>();
+	static Set<Grid> all_grids = new HashSet<>();
+	static Deque<Grid> right_awnser = new ArrayDeque<>();
 	static Grid current_grid ; 
 	static Grid inital_state ;
+	static boolean finished_game = false;
+	// ===========================================
+	// Main_Functions . 
+	// ===========================================
 	public static void user_game() {
 		while(!GameManager.current_grid.is_goal()) {
 		// 1- get the cordenates of the cell you want to change . 
@@ -39,21 +51,19 @@ public class GameManager {
 		System.out.println("congrats you finished the game");
 
 	}
-	
-	static Scanner in = new Scanner(System.in);
-	
 
-	
 	public static void game_init() {
 		System.out.println("enter the size for the game :");
 		int grid_size = in.nextInt();
+		Grid.set_grid_size(grid_size);
 		grid_length = grid_size;
 		grid_width = grid_size;
 		Cell.cells_init(grid_size); // to initalize the counter for random colors .
 		GameManager.inital_state = new Grid(grid_size);
 		// the real start of the game ^_^
 		current_grid = inital_state;
-		print_grid(current_grid);
+		//print_grid(current_grid);
+		Bot.play();
 		//user_game();
 		in.close();
 	}

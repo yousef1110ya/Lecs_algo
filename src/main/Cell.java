@@ -33,14 +33,14 @@ public class Cell {
 	// =========================================
 	public static char generate_random_color() {
 		List<Character> active_keys = remaining_colores.entrySet().stream().filter(e -> e.getValue() > 0).map(Map.Entry::getKey).toList();
-		System.out.println(active_keys);
+		//System.out.println(active_keys);
 		//if(active_keys.isEmpty())	return (Character) null;
 
 		char chosen = active_keys.get(rand.nextInt(active_keys.size()));
 		
 		remaining_colores.put(chosen, remaining_colores.get(chosen) - 1);
 		int remaining_pulls = remaining_colores.get(chosen);
-		System.out.println("chosen char: "+ chosen + " , remaining pulls: "+ remaining_pulls);
+		//System.out.println("chosen char: "+ chosen + " , remaining pulls: "+ remaining_pulls);
 		return chosen;
 	}
 

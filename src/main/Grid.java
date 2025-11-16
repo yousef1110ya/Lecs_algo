@@ -5,10 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 public class Grid {
+	// =================================================
+	// Constants  .
+	// =================================================
 	int grid_length = GameManager.grid_length;
 	int grid_width = GameManager.grid_width;
+	static int grid_size; 
 	Cell[][] matrix;
-
 	Grid parent ; 
 	List<Grid> children = new ArrayList<>();
 	
@@ -17,6 +20,9 @@ public class Grid {
 	// =================================================
 	// Constructors .
 	// =================================================
+	public static void set_grid_size(int size) {
+		grid_size= size;
+	}
 	public Grid(int grid_size) {
 		this.grid_length = grid_size; 
 		this.grid_width = grid_size;
@@ -24,7 +30,7 @@ public class Grid {
         for (int i = 0; i < grid_size; i++) {
             for (int j = 0; j < grid_size; j++) {
                 matrix[i][j] = new Cell();
-                System.out.println("added a new Cell in pos i: " + i + " j: " + j  );
+                //System.out.println("added a new Cell in pos i: " + i + " j: " + j  );
                 }
         }
         this.counts_init();
@@ -40,13 +46,68 @@ public class Grid {
 	}
 	
 	static boolean is_valid_move(int x , int y , char direction) {
-		if(x == GameManager.grid_length && direction == 'D') return false; 
+		if(x == GameManager.grid_length -1  && direction == 'D') return false; 
 		else if(x == 0 && direction == 'U') return false; 
-		else if(y == GameManager.grid_width && direction == 'R') return false; 
+		else if(y == GameManager.grid_length - 1 && direction == 'R') return false; 
 		else if(y == 0 && direction == 'L') return false;
 		return true;
 	}
+
+	public boolean is_goal() {
+		if(row_douples.isEmpty() && col_douples.isEmpty()) {
+			return true;
+		}
+		return false; 
+	}
+	
+	
+	@Override
+	public boolean equals(Object o) {
+	    if (this == o) return true;
+	    if (o == null || getClass() != o.getClass()) return false;
+
+	    Grid other = (Grid) o;
+
+	    // Dimensions must match
+	    if (this.grid_length != other.grid_length ||
+	        this.grid_width  != other.grid_width) {
+	        return false;
+	    }
+
+	    // Matrix comparison based on Cell.color
+	    for (int i = 0; i < grid_size; i++) {
+	        for (int j = 0; j < grid_size; j++) {
+	            char c1 = this.matrix[i][j].color;
+	            char c2 = other.matrix[i][j].color;
+	            if (c1 != c2) return false;
+	        }
+	    }
+
+	    return true;
+	}
+
+	@Override
+	public int hashCode() {
+	    int result = 1;
+	    final int prime = 31;
+
+	    // Hash based solely on matrix cell colors
+	    for (int i = 0; i < grid_size; i++) {
+	        for (int j = 0; j < grid_size; j++) {
+	            result = prime * result + this.matrix[i][j].color;
+	        }
+	    }
+
+	    return result;
+	}
+	// =================================================
+	// Main functions .
+	// =================================================
+	
 	void swap (int x , int y , char direction) {
+		if(!Grid.is_valid_move(x, y, direction)) {
+			return ;
+		}
 		int target_x =0  , target_y =0  ; 
 		switch(direction) {
 		case 'U':
@@ -68,41 +129,21 @@ public class Grid {
 		}
 		Grid child = this;
 		Cell cell1 = child.matrix[x][y];
+		System.out.println("the value for x: "+x+" y: "+y + "and the targets are , X: "+ target_x + " Y:"+target_y+"  and the direction is : "+ direction);
 		Cell cell2 = child.matrix[target_x][target_y];
 		cell1.swap(cell2);
-		if(Helpers.is_new_grid(child)) {
+		if(!GameManager.all_grids.contains(child)) {
+			System.out.println("adding a new child to the grid");
 			GameManager.all_grids.add(child);
 			this.children.add(child);
 			child.parent = this; 
 			child.counts_init();// to re-count the douplicates in a grid each step . 
 		}
-		GameManager.current_grid = child;
+		//GameManager.current_grid = child;
 		GameManager.print_grid(child);
-
-	}
-	public boolean is_goal() {
-		if(row_douples.isEmpty() && col_douples.isEmpty()) {
-			return true;
+		if(child.is_goal()) {
+			Helpers.closing_game(child);
 		}
-		return false; 
-	}
-	
-	
-	@Override
-	public boolean equals(Object obj) {
-	    if (this == obj) return true;
-	    if (!(obj instanceof Grid)) return false;
-	    Grid other = (Grid) obj;
 
-	    // Compare cell-by-cell
-	    for (int i = 0; i < grid_length; i++) {
-	        for (int j = 0; j < grid_width; j++) {
-	            if (!(this.matrix[i][j].color == other.matrix[i][j].color)) {
-	                return false;
-	            }
-	        }
-	    }
-	    return true;
-	}
-	
+	}	
 }

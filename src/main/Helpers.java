@@ -43,10 +43,9 @@ public class Helpers {
 		return result;
 		
 	}
-	
-	
-	
+
 	public static boolean is_new_grid(Grid current) {
+		System.out.println("inside the is_new_grid");
 		 for (Grid existing : GameManager.all_grids) {
 		        if (existing.equals(current)) {
 		            return false; 
@@ -54,4 +53,29 @@ public class Helpers {
 		    }
 		    return true;
 	}
+	
+	public static void save_parent_chain(Grid goal_state) {
+		//TODO:
+		//1- just keep getting the parents for each grid and add them to the stack . 
+		//2- print all of the stack at it's full.
+		if(goal_state == null) return;
+		
+		Grid temp = goal_state; 
+		while(temp.parent != null) {
+			GameManager.right_awnser.add(temp); 
+			temp = temp.parent;
+		}
+		
+	}
+	
+	public static void closing_game(Grid goal_state) {
+		System.out.println("congrats , you finished the game");
+		GameManager.finished_game = true;
+		Helpers.save_parent_chain(goal_state);
+		while(!GameManager.right_awnser.isEmpty()) {
+			Grid temp = GameManager.right_awnser.pop();
+			GameManager.print_grid(temp);
+		}
+	}
+	
 }
