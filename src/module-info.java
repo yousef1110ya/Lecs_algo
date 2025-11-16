@@ -4,5 +4,5 @@
 /**
  * 
  */
-module AlgoLec2 {
+module Lecs_algo {
 }

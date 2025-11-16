@@ -9,8 +9,8 @@ public class GameManager {
 	public static int grid_width  = 4 ;
 
 	static List<Grid> all_grids = new ArrayList<>();
-	static Grid current_grid = new Grid(); 
-	static Grid inital_state = new Grid();
+	static Grid current_grid ; 
+	static Grid inital_state ;
 	public static void user_game() {
 		while(!GameManager.current_grid.is_goal()) {
 		// 1- get the cordenates of the cell you want to change . 
@@ -42,26 +42,25 @@ public class GameManager {
 	
 	static Scanner in = new Scanner(System.in);
 	
+
 	
 	public static void game_init() {
-		Cell.cells_init(); // to initalize the counter for random colors .
-		System.out.println("enter the color for each of these cells");
-		for (int i = 0; i < GameManager.grid_length; i++) {
-	        for (int j = 0; j < GameManager.grid_width; j++) {
-	            System.out.printf("Enter value for [%d][%d]: ", i, j);
-	            inital_state.matrix[i][j].setColor(in.next().charAt(0)); 
-	        }
-	    }
+		System.out.println("enter the size for the game :");
+		int grid_size = in.nextInt();
+		grid_length = grid_size;
+		grid_width = grid_size;
+		Cell.cells_init(grid_size); // to initalize the counter for random colors .
+		GameManager.inital_state = new Grid(grid_size);
 		// the real start of the game ^_^
 		current_grid = inital_state;
 		print_grid(current_grid);
-		user_game();
+		//user_game();
 		in.close();
 	}
 	public static void print_grid(Grid printable) {
 		for (int i = 0; i < grid_length; i++) {
 		    for (int j = 0; j < grid_width ; j++) {
-		        System.out.print(printable.matrix[i][j].color + " ");
+		        System.out.print("i = " + i + " j = " + j + "| " + printable.matrix[i][j].color + " ");
 		    }
 		    System.out.println(); 
 		}	

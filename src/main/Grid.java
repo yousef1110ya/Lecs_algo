@@ -7,62 +7,75 @@ import java.util.Map;
 public class Grid {
 	int grid_length = GameManager.grid_length;
 	int grid_width = GameManager.grid_width;
-	Cell[][] matrix = new Cell[grid_length][grid_width];
+	Cell[][] matrix;
 
 	Grid parent ; 
 	List<Grid> children = new ArrayList<>();
 	
 	Map<Integer , String> row_douples = new HashMap<>();
 	Map<Integer , String> col_douples = new HashMap<>();
-	public Grid() {
-        for (int i = 0; i < grid_length; i++) {
-            for (int j = 0; j < grid_width; j++) {
+	// =================================================
+	// Constructors .
+	// =================================================
+	public Grid(int grid_size) {
+		this.grid_length = grid_size; 
+		this.grid_width = grid_size;
+		this.matrix = new Cell[grid_size][grid_size];
+        for (int i = 0; i < grid_size; i++) {
+            for (int j = 0; j < grid_size; j++) {
                 matrix[i][j] = new Cell();
-            }
+                System.out.println("added a new Cell in pos i: " + i + " j: " + j  );
+                }
         }
         this.counts_init();
     }
+	
+	// =================================================
+	// Helper functions .
+	// =================================================
+	
 	public void counts_init() {
 		row_douples = Helpers.count_doubles_in_set_lines(this.matrix ,true);
 		col_douples = Helpers.count_doubles_in_set_lines(this.matrix, false);
 	}
 	
 	static boolean is_valid_move(int x , int y , char direction) {
-		if(x == GameManager.grid_length && direction == 'L') return false; 
-		else if(x == 0 && direction == 'R') return false; 
-		else if(y == GameManager.grid_width && direction == 'D') return false; 
-		else if(y == 0 && direction == 'U') return false;
+		if(x == GameManager.grid_length && direction == 'D') return false; 
+		else if(x == 0 && direction == 'U') return false; 
+		else if(y == GameManager.grid_width && direction == 'R') return false; 
+		else if(y == 0 && direction == 'L') return false;
 		return true;
 	}
 	void swap (int x , int y , char direction) {
 		int target_x =0  , target_y =0  ; 
 		switch(direction) {
 		case 'U':
-			target_x = x ; 
-			target_y = y - 1 ;
+			target_x = x - 1  ; 
+			target_y = y ;
 			break; 
 		case 'D':
-			target_x = x ; 
-			target_y = y + 1 ;
+			target_x = x + 1 ; 
+			target_y = y  ;
 			break;
 		case 'L':
-			target_x = x - 1; 
-			target_y = y ;
+			target_x = x; 
+			target_y = y - 1;
 			break;
 		case 'R':
-			target_x = x + 1; 
-			target_y = y ;
+			target_x = x; 
+			target_y = y + 1 ;
 			break;
 		}
 		Grid child = this;
-		this.children.add(child);
-		child.parent = this; 
 		Cell cell1 = child.matrix[x][y];
 		Cell cell2 = child.matrix[target_x][target_y];
 		cell1.swap(cell2);
-		if(Helpers.is_new_grid(child))
+		if(Helpers.is_new_grid(child)) {
 			GameManager.all_grids.add(child);
-		child.counts_init();// to re-count the douplicates in a grid each step . 
+			this.children.add(child);
+			child.parent = this; 
+			child.counts_init();// to re-count the douplicates in a grid each step . 
+		}
 		GameManager.current_grid = child;
 		GameManager.print_grid(child);
 
